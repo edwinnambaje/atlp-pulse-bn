@@ -1,18 +1,29 @@
 FROM node:18-alpine
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci 
+RUN npm ci
 
-# Only set environment variables if they are not already set
-ENV NODE_ENV=production
-ENV MONGO_PROD_DB=${MONGO_PROD_DB:-mongodb+srv://doadmin:e617MB4IVm5rC092@pulse-prod-db-70e37aa6.mongo.ondigitalocean.com/devpulse-backend-staging?tls=true&authSource=admin&replicaSet=pulse-prod-db}
-ENV ADMIN_EMAIL=${ADMIN_EMAIL:-devpulseadmn@gmail.com}
-ENV ADMIN_PASS=${ADMIN_PASS:-yptbizlxrzfnyzon}
-ENV COORDINATOR_EMAIL=${COORDINATOR_EMAIL:-coordinatordevpulse@gmail.com}
-ENV COORDINATOR_PASS=${COORDINATOR_PASS:-zrvxpvihyyyhdxcp}
-ENV REGISTER_FRONTEND_URL=${REGISTER_FRONTEND_URL:-https://beta.devpulse.org/register}
-ENV REGISTER_ORG_FRONTEND_URL=${REGISTER_ORG_FRONTEND_URL:-https://beta.devpulse.org/signup/org}
-ENV FRONTEND_LINK=${FRONTEND_LINK:-https://beta.devpulse.org}
+ARG NODE_ENV=development
+ENV NODE_ENV=$NODE_ENV
+
+# Use build arguments for environment-specific settings
+ARG MONGO_DB
+ARG ADMIN_EMAIL
+ARG ADMIN_PASS
+ARG COORDINATOR_EMAIL
+ARG COORDINATOR_PASS
+ARG REGISTER_FRONTEND_URL
+ARG REGISTER_ORG_FRONTEND_URL
+ARG FRONTEND_LINK
+
+ENV MONGO_PROD_DB=$MONGO_DB
+ENV ADMIN_EMAIL=$ADMIN_EMAIL
+ENV ADMIN_PASS=$ADMIN_PASS
+ENV COORDINATOR_EMAIL=$COORDINATOR_EMAIL
+ENV COORDINATOR_PASS=$COORDINATOR_PASS
+ENV REGISTER_FRONTEND_URL=$REGISTER_FRONTEND_URL
+ENV REGISTER_ORG_FRONTEND_URL=$REGISTER_ORG_FRONTEND_URL
+ENV FRONTEND_LINK=$FRONTEND_LINK
 
 COPY . .
 RUN npm run build
